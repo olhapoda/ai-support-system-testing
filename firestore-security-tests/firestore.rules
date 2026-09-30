@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Профіль користувача: users/{userId}
+    match /users/{userId} {
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false; // видалення профілю через клієнт не дозволяється
+    }
+
+    // Історія розмов: conversations/{userId}/messages/{messageId}
+    match /conversations/{userId}/messages/{messageId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      // Створення дозволено лише власнику розмови,
+      // і лише якщо поле senderId у payload відповідає його власному uid
+      // (захист від підміни uid у тілі запиту), текст повідомлення
+      // є непорожнім рядком розумної довжини (захист від порожніх
+      // та штучно роздутих payload'ів), і документ не містить жодних
+      // полів окрім очікуваних трьох (захист від вкладання довільних
+      // великих полів поза межами схеми)
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.senderId == request.auth.uid
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() <= 4000
+                    && request.resource.data.keys().hasOnly(['text', 'senderId', 'createdAt']);
+
+      // Повідомлення розглядаються як незмінний журнал:
+      // редагування та видалення заборонені для всіх
+      allow update, delete: if false;
+    }
+
+    // Усе, що не описано вище, заблоковано за замовчуванням
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

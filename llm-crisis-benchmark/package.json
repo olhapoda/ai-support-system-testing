@@ -1,0 +1,12 @@
+{
+  "name": "llm-crisis-benchmark",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "benchmark": "node benchmark.js",
+    "analyze": "node analyze.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1"
+  }
+}
