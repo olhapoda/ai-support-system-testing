@@ -122,7 +122,7 @@ describe('conversations/{userId}/messages/{messageId}', () => {
   });
 
   it('11. користувач читає свою історію розмови: дозволений процес', async () => {
-    await seedMessage('alice', 'msg5', { text: 'Вітаю', senderId: 'alice' });
+    await seedMessage('alice', 'msg5', { text: 'Привіт', senderId: 'alice' });
     const alice = testEnv.authenticatedContext('alice');
     await assertSucceeds(alice.firestore().doc('conversations/alice/messages/msg5').get());
   });
@@ -133,7 +133,7 @@ describe('conversations/{userId}/messages/{messageId}', () => {
     await assertFails(bob.firestore().doc('conversations/alice/messages/msg6').get());
   });
 
-  it('13. користувач намагається редагувати повідомлення: заборонений процес (незмінний журнал)', async () => {
+  it('13. користувач намагається редагувати повідомлення: заборонений процес', async () => {
     await seedMessage('alice', 'msg7', { text: 'Оригінал', senderId: 'alice' });
     const alice = testEnv.authenticatedContext('alice');
     await assertFails(
@@ -215,7 +215,7 @@ describe('цілісність та валідація даних', () => {
 });
 
 describe('обмеження на рівні платформи Firestore', () => {
-  it('21. документ, що перевищує вбудований ліміт розміру Firestore через додаткове поле: заборонений процес незалежно від бізнес-правил', async () => {
+  it('21. документ, що перевищує вбудований ліміт розміру Firestore через додаткове поле,: заборонений процес незалежно від бізнес-правил', async () => {
     const alice = testEnv.authenticatedContext('alice');
     const oversizedField = 'x'.repeat(1_100_000);
     await assert.rejects(

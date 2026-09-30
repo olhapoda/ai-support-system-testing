@@ -66,7 +66,7 @@ async function callGemini(model, text) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
         contents: [{ role: 'user', parts: [{ text }] }],
-        generationConfig: { maxOutputTokens: 100, temperature: 1 },
+        generationConfig: { maxOutputTokens: 5, temperature: 0 },
       }),
     }
   );

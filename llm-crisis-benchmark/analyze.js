@@ -9,7 +9,7 @@ const rows = lines.slice(1).map((line) => {
 
 const providers = [...new Set(rows.map((r) => r.provider))];
 
-console.log('\nПідсумки:\n');
+console.log('\nПідсумок по моделях:\n');
 console.log(
   'модель'.padEnd(20),
   'точність'.padEnd(10),
@@ -49,6 +49,6 @@ for (const provider of providers) {
       console.log(`  #${r.phrase_id} — модель відповіла: ${r.predicted}`)
     );
   } else {
-    console.log(`${provider}: усі кризові сигнали було розпізнано правильно`);
+    console.log(`${provider}: усі кризові сигнали розпізнано правильно`);
   }
 }
